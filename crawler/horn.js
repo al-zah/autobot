@@ -1,13 +1,13 @@
 // flow
 import stream from 'stream';
 import request from 'request';
-import { difference } from 'ramda';
+import { difference, take } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
 import { createdBots, botsMapToArray } from './api/bots';
 
-let lastQueryResultState = null;
+const lastQueryResultState = {};
 const BULLHORN_ID = 'cqRuOm5OAVn';
 const URI_BASE = 'https://auto.ria.com/';
 
@@ -48,23 +48,23 @@ export const horn = (id: string, json: CarType) => {
 const fetcher = (props) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
         logger.info(`${Date.now()}: crawling completed successfully!`);
-        if (lastQueryResultState === null) {
-            lastQueryResultState = json;
+        if (typeof lastQueryResultState[props.title] === 'undefined') {
+            lastQueryResultState[props.title] = json;
 
             return false;
         }
 
-        const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultState));
+        const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultState[props.title]));
 
         if (maybeNewValues.length > 0) {
             Promise.all(maybeNewValues.map(fetchById))
                 .then((cars: Array<CarType>) => {
-                    cars.forEach(car => horn(BULLHORN_ID, car));
+                    take(5, cars).forEach(car => horn(BULLHORN_ID, car));
                 })
                 .catch(logger.error);
         }
 
-        lastQueryResultState = json;
+        lastQueryResultState[props.title] = json;
     })
     .catch(logger.error);
 
