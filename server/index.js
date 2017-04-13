@@ -12,13 +12,13 @@ app.use(compression());
 
 sharedMiddlewares(app);
 
-app.get('/*', (req: express$Request, res: express$Response, next: express$NextFunction): void => {
-    if (req.baseUrl.includes('/api')) {
-        next();
-    } else {
-        res.sendFile(path.join(__dirname, '../dist/index.html'));
-    }
-});
+// app.get('/*', (req: express$Request, res: express$Response, next: express$NextFunction): void => {
+//     if (req.baseUrl.includes('/api')) {
+//         next();
+//     } else {
+//         res.sendFile(path.join(__dirname, '../dist/index.html'));
+//     }
+// });
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.use(express.static(path.join(__dirname, '../assets')));

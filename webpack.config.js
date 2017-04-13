@@ -36,9 +36,4 @@ module.exports = {
             template: 'index.html',
         }),
     ],
-    resolve: {
-        alias: {
-            'ep-ui-kit': path.resolve(__dirname, '../ep-ui-kit'),
-        },
-    },
 };

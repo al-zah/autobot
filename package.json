@@ -9,8 +9,7 @@
     "lint:watch": "esw -w --fix crawler src",
     "flow": "flow check",
     "code:check": "npm run lint && npm run flow",
-    "build:crawler": "npm run clean && mkdir -p dist && babel crawler -s -D -d dist --presets es2015,stage-2",
-    "build": "npm run build:crawler && cross-env NODE_ENV=production webpack",
+    "build": "cross-env NODE_ENV=production webpack",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production node server/loader.js",
     "start:dev": "cross-env NODE_ENV=development node server-hot/loader.js"
