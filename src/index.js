@@ -1,74 +1,21 @@
-import request from 'request';
-import stream from 'stream';
-import { difference } from 'ramda';
-import { fetchByQuery, idsSelector, fetchById } from './fetcher';
+// @flow
+import express from 'express';
+import bodyParser from 'body-parser';
+import { fetcher } from './horn';
+import getPort from './getPort';
 
-const URI_BASE = 'https://auto.ria.com/';
-
-const requestToIntegram = (id, res) => {
-    const url = `https://integram.org/${id}`;
-
-    return request.post({ url }, (error, response, body) => {
-        if (error) return res(error);
-
-        res(null, body);
-    });
-};
-
-export const horn = (id, json) => {
-    const title = json.title;
-    const location = json.locationCityName;
-    // const photo = json.photoData.seoLinkF;
-    const price = json.USD;
-    const link = `${URI_BASE}${json.linkToView}`;
-
-    const message = JSON.stringify({
-        text: `
-*${title}*
-${location}
-Price: ${price}
-[Link to the website](${link})
-`
-    });
-
-    const a = new stream.PassThrough();
-
-    a.write(message);
-    a.pipe(requestToIntegram(id, (err, body) => {
-        if (err) console.log(err);
-
-        console.log('successfully ');
-        console.log(body);
-    }));
-    a.end();
-};
-
-let lastQueryResultState = null;
 const DELAY = 60000;
-const BULLHORN_ID = 'cqRuOm5OAVn';
 
-setInterval(() => {
-    fetchByQuery()
-        .then(json => {
-            console.log('crawling completed successfully!');
-            if (lastQueryResultState === null) {
-                lastQueryResultState = json;
-                return false;
-            }
+setInterval(fetcher, DELAY);
 
-            const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultState));
+const app: express$Application = express();
 
-            console.log('new values: ');
-            console.log(maybeNewValues);
-            if (maybeNewValues.length > 0) {
-                Promise.all(maybeNewValues.map(fetchById))
-                    .then((cars) => {
-                        cars.forEach(car => horn(BULLHORN_ID, car));
-                    })
-                    .catch(e => console.log(e));
-            }
+app.disable('x-powered-by');
 
-            lastQueryResultState = json;
-        })
-        .catch(e => console.log(e));
-}, DELAY);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/health', (req: express$Request, res: express$Response): void => res.end('OK'));
+
+const port: number = getPort();
+
+app.listen(port, (): Server => console.log(`Listening on port ${port}`)); // eslint-disable-line no-console

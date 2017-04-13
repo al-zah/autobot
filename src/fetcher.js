@@ -1,5 +1,6 @@
-// kudos to devs from auto.ria for retarded query params naming
+// @flow
 import { stringify } from 'query-string';
+import type { QueryResultType } from 'autobot';
 import { fetchWrapper } from './utils';
 
 const URI_SEARCH_BASE = 'https://s-ua.auto.ria.com/blocks_search_ajax/search/';
@@ -12,9 +13,9 @@ const CATEGORY = 1; // i guess its cars
 const MARKA_ID_HONDA = 28; // i guess marka_id is car vendor/manufacturer
 const MODEL_ID_ACCORD = 262;
 
-export const idsSelector = json => json.result.search_result.ids;
+export const idsSelector = (json: QueryResultType): Array<string> => json.result.search_result.ids;
 
-const buildSearchQuery = () => {
+const buildSearchQuery = (): string => {
     const queryMap = {
         countpage: VERY_BIG_NUMBER,
         power_name: POWER_NAME,
@@ -33,4 +34,4 @@ const buildSearchQuery = () => {
 
 export const fetchByQuery = () => fetchWrapper(buildSearchQuery());
 
-export const fetchById = (id) => fetchWrapper(`${URI_SEARCH_BY_ID_BASE}${id}`);
+export const fetchById = (id: string) => fetchWrapper(`${URI_SEARCH_BY_ID_BASE}${id}`);

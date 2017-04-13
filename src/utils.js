@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 export const fetchWrapper = (url, options) =>
     new Promise((resolve, reject) => {
         fetch(url, options)
-            .then((response) => response.json().then((json) => ({
+            .then(response => response.json().then(json => ({
                 json,
                 response,
             })))
