@@ -1,21 +1,21 @@
 // @flow
-import express from 'express';
-import bodyParser from 'body-parser';
-import { fetcher } from './horn';
-import getPort from './getPort';
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import configureStore from './store/configureStore';
+import Layout from './layout';
 
-const DELAY = 60000;
+const MOUNT_NODE = document.getElementById('root'); // eslint-disable-line
 
-setInterval(fetcher, DELAY);
+const store = configureStore({});
 
-const app: express$Application = express();
+render(
+    <Provider store={store}>
+        <Layout />
+    </Provider>,
+    MOUNT_NODE,
+);
 
-app.disable('x-powered-by');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/health', (req: express$Request, res: express$Response): void => res.end('OK'));
-
-const port: number = getPort();
-
-app.listen(port, (): Server => console.log(`Listening on port ${port}`)); // eslint-disable-line no-console
+if (module.hot) {
+    module.hot.accept(); // eslint-disable-line
+}

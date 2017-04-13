@@ -14,7 +14,17 @@ declare type queryResult$Type = {
     }
 };
 
+declare type genericEntity$Type = {
+    name: string,
+    value: number
+}
+
+declare type brand$Type = genericEntity$Type & { count: number };
+
 declare module 'autobot' {
     declare type CarType = car$Type;
     declare type QueryResultType = queryResult$Type;
+    declare type BrandType = $Shape<brand$Type>;
+    declare type StateType = $Shape<genericEntity$Type>;
+    declare type ModelType = $Shape<genericEntity$Type>;
 }

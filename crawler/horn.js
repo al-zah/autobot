@@ -5,6 +5,7 @@ import { difference } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
+import { createdBots, botsMapToArray } from './api/bots';
 
 let lastQueryResultState = null;
 const BULLHORN_ID = 'cqRuOm5OAVn';
@@ -44,7 +45,7 @@ export const horn = (id: string, json: CarType) => {
     transformStream.end();
 };
 
-export const fetcher = () => fetchByQuery()
+const fetcher = (props) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
         logger.info(`${Date.now()}: crawling completed successfully!`);
         if (lastQueryResultState === null) {
@@ -66,3 +67,5 @@ export const fetcher = () => fetchByQuery()
         lastQueryResultState = json;
     })
     .catch(logger.error);
+
+export const askAllBots = () => botsMapToArray(createdBots).forEach(bot => fetcher(bot));
