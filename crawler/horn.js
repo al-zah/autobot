@@ -3,11 +3,12 @@ import stream from 'stream';
 import request from 'request';
 import { difference, take } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
+import { writeFile } from 'fs-promise';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
-import { createdBots, botsMapToArray } from './api/bots';
+import { botsMapToArray } from './api/bots';
+import { readBotsService, resultsService, resultsFilePath } from './file-services';
 
-const lastQueryResultState = {};
 const BULLHORN_ID = 'cqRuOm5OAVn';
 const URI_BASE = 'https://auto.ria.com/';
 
@@ -45,27 +46,38 @@ export const horn = (id: string, json: CarType) => {
     transformStream.end();
 };
 
-const fetcher = (props) => fetchByQuery(props)
+const fetcher = (props: *) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
         logger.info(`${Date.now()}: crawling completed successfully!`);
-        if (typeof lastQueryResultState[props.title] === 'undefined') {
-            lastQueryResultState[props.title] = json;
+        resultsService()
+            .then((lastQueryResults: *) => {
+                const newQueryResults = {
+                    ...lastQueryResults,
+                    [props.title]: json,
+                };
 
-            return false;
-        }
+                if (typeof lastQueryResults[props.title] === 'undefined') {
+                    writeFile(resultsFilePath, JSON.stringify(newQueryResults))
+                        .catch(logger.error);
 
-        const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultState[props.title]));
+                    return false;
+                }
 
-        if (maybeNewValues.length > 0) {
-            Promise.all(maybeNewValues.map(fetchById))
-                .then((cars: Array<CarType>) => {
-                    take(5, cars).forEach(car => horn(BULLHORN_ID, car));
-                })
-                .catch(logger.error);
-        }
 
-        lastQueryResultState[props.title] = json;
+                const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResults[props.title]));
+
+                if (maybeNewValues.length > 0) {
+                    Promise.all(maybeNewValues.map(fetchById))
+                        .then((cars: Array<CarType>) => take(5, cars).forEach(car => horn(BULLHORN_ID, car))) // eslint-disable-line
+                        .catch(logger.error);
+                }
+
+                return writeFile(resultsFilePath, JSON.stringify(newQueryResults)).catch(logger.error);
+            });
     })
     .catch(logger.error);
 
-export const askAllBots = () => botsMapToArray(createdBots).forEach(bot => fetcher(bot));
+export const askAllBots = () =>
+    readBotsService()
+        .then((createdBots: *) => botsMapToArray(createdBots).forEach(bot => fetcher(bot)))
+        .catch(logger.error);

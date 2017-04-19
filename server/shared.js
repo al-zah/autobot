@@ -3,7 +3,7 @@ import { askAllBots } from '../crawler/horn';
 import api from '../crawler/api';
 
 const sharedMw = (app) => {
-    const DELAY = 60000;
+    const DELAY = 3000;
 
     setInterval(askAllBots, DELAY);
 
