@@ -3,11 +3,9 @@ import stream from 'stream';
 import request from 'request';
 import { difference, take } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
-import { writeFile } from 'fs-promise';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
-import { botsMapToArray } from './api/bots';
-import { readBotsService, resultsService, resultsFilePath } from './file-services';
+import { readBotsService, readResultsService, writeResultsService } from './services';
 
 const BULLHORN_ID = 'cqRuOm5OAVn';
 const URI_BASE = 'https://auto.ria.com/';
@@ -49,20 +47,13 @@ export const horn = (id: string, json: CarType) => {
 const fetcher = (props: *) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
         logger.info(`${Date.now()}: crawling completed successfully!`);
-        resultsService()
+        readResultsService()
             .then((lastQueryResults: *) => {
-                const newQueryResults = {
-                    ...lastQueryResults,
-                    [props.title]: json,
-                };
-
                 if (typeof lastQueryResults[props.title] === 'undefined') {
-                    writeFile(resultsFilePath, JSON.stringify(newQueryResults))
-                        .catch(logger.error);
+                    writeResultsService(props.title, json).catch(logger.error);
 
                     return false;
                 }
-
 
                 const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResults[props.title]));
 
@@ -72,12 +63,12 @@ const fetcher = (props: *) => fetchByQuery(props)
                         .catch(logger.error);
                 }
 
-                return writeFile(resultsFilePath, JSON.stringify(newQueryResults)).catch(logger.error);
+                return writeResultsService(props.title, json).catch(logger.error);
             });
     })
     .catch(logger.error);
 
 export const askAllBots = () =>
     readBotsService()
-        .then((createdBots: *) => botsMapToArray(createdBots).forEach(bot => fetcher(bot)))
+        .then((createdBots: *) => createdBots.forEach(bot => fetcher(bot)))
         .catch(logger.error);
