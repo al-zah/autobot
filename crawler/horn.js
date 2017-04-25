@@ -1,7 +1,7 @@
 // flow
 import stream from 'stream';
 import request from 'request';
-import { difference, take } from 'ramda';
+import { difference, take, head, filter, compose, propEq } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
@@ -49,13 +49,19 @@ const fetcher = (props: *) => fetchByQuery(props)
         logger.info(`${Date.now()}: crawling completed successfully!`);
         readResultsService()
             .then((lastQueryResults: *) => {
-                if (typeof lastQueryResults[props.title] === 'undefined') {
+                const filterByTitle = compose(
+                    head,
+                    filter(propEq('title', props.title)),
+                );
+                const lastQueryResultsByTitle = filterByTitle(lastQueryResults);
+
+                if (typeof lastQueryResultsByTitle === 'undefined') {
                     writeResultsService(props.title, json).catch(logger.error);
 
                     return false;
                 }
 
-                const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResults[props.title]));
+                const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultsByTitle));
 
                 if (maybeNewValues.length > 0) {
                     Promise.all(maybeNewValues.map(fetchById))

@@ -15,7 +15,7 @@ const CATEGORY = 1; // i guess its cars
 
 export const idsSelector = (json: QueryResultType): Array<string> => json.result.search_result.ids;
 
-const buildSearchQuery = (props): string => {
+const buildSearchQuery = (props: *): string => {
     const queryMap = {
         countpage: VERY_BIG_NUMBER,
         power_name: POWER_NAME,
@@ -32,6 +32,6 @@ const buildSearchQuery = (props): string => {
     return `${URI_SEARCH_BASE}?${stringify(queryMap)}`;
 };
 
-export const fetchByQuery = (props) => fetchWrapper(buildSearchQuery(props));
+export const fetchByQuery = (props: *) => fetchWrapper(buildSearchQuery(props));
 
 export const fetchById = (id: string) => fetchWrapper(`${URI_SEARCH_BY_ID_BASE}${id}`);
