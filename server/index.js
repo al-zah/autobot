@@ -16,4 +16,6 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 app.use(express.static(path.join(__dirname, '../assets')));
 
+app.use('/wakemydyno.txt', (req, res) => res.send('OK!'));
+
 app.listen(port, (): Server => console.log(`Listening on port ${port}`)); // eslint-disable-line no-console
