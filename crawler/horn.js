@@ -7,7 +7,7 @@ import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
 import { readBotsService, readResultsService, writeResultsService } from './services';
 
-const BULLHORN_ID = 'cqRuOm5OAVn';
+const BULLHORN_ID = 'ccrmZLplg30';
 const URI_BASE = 'https://auto.ria.com/';
 
 const requestToIntegram = (id: string, res: () => void) => {

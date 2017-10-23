@@ -2,14 +2,11 @@
 import { MongoClient } from 'mongodb';
 import logger from './logger';
 
-export const createdBotsFilePath = `${__dirname}/../storage/created-bots.json`;
-export const resultsFilePath = `${__dirname}/../storage/results.json`;
-
 const mongoAuth = {
     user: 'a',
     pass: 123,
 };
-const mongoUrl = `mongodb://${mongoAuth.user}:${mongoAuth.pass}@ds111461.mlab.com:11461/autobots`;
+const mongoUrl = `mongodb://${mongoAuth.user}:${mongoAuth.pass}@ds133044.mlab.com:33044/autobot1`;
 const RESULTS = 'results';
 const BOTS = 'bots';
 let connection = null;
