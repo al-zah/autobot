@@ -4,17 +4,6 @@ import HTTPStatus from 'http-status';
 import { readBotsService, writeBotsService } from '../services';
 import logger from '../logger';
 
-const filterDefinedProps = (props: *) => Object.keys(props).reduce((acc: *, key: *) => {
-    if (typeof props[key] !== 'undefined') {
-        return {
-            ...acc,
-            [key]: props[key],
-        };
-    }
-
-    return acc;
-}, {});
-
 export const createBot = (req: $Request, res: $Response) => {
     const { currentBrand, currentState, currentYearFrom, currentYearTo, currentModel, currentBodyStyle,
         title } = req.body;
@@ -22,14 +11,14 @@ export const createBot = (req: $Request, res: $Response) => {
     readBotsService()
         .then((createdBots: *) => {
             if (typeof createdBots[title] === 'undefined') {
-                writeBotsService(title, filterDefinedProps({
+                writeBotsService(title, {
                     currentBrand,
                     currentState,
                     currentYearFrom,
                     currentYearTo,
                     currentModel,
                     currentBodyStyle,
-                })).then(() => res.send('OK')).catch(logger.error);
+                }).then(() => res.send('OK')).catch(logger.error);
             } else {
                 res.status(HTTPStatus.CONFLICT).send(`Already have ${title}`);
             }

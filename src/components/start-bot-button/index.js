@@ -11,11 +11,7 @@ const hideIfNoData = (hasNoData: boolean) =>
 
 const requiredProps = [
     'currentBrand',
-    'currentState',
-    'currentYearFrom',
-    'currentYearTo',
     'currentModel',
-    'currentBodyStyle',
 ];
 
 const findTitleByProp = props => (propName, value) => {

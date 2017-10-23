@@ -13,6 +13,17 @@ const CATEGORY = 1; // i guess its cars
 // const MARKA_ID_HONDA = 28; // i guess marka_id is car vendor/manufacturer
 // const MODEL_ID_ACCORD = 262;
 
+const filterDefinedProps = (props: *) => Object.keys(props).reduce((acc: *, key: *) => {
+    if (typeof props[key] !== 'undefined') {
+        return {
+            ...acc,
+            [key]: props[key],
+        };
+    }
+
+    return acc;
+}, {});
+
 export const idsSelector = (json: QueryResultType): Array<string> => json.result.search_result.ids;
 
 const buildSearchQuery = (props: *): string => {
@@ -29,7 +40,7 @@ const buildSearchQuery = (props: *): string => {
         'bodystyle[5]': props.currentBodyStyle,
     };
 
-    return `${URI_SEARCH_BASE}?${stringify(queryMap)}`;
+    return `${URI_SEARCH_BASE}?${stringify(filterDefinedProps(queryMap))}`;
 };
 
 export const fetchByQuery = (props: *) => fetchWrapper(buildSearchQuery(props));
