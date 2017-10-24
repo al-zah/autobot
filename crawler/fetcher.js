@@ -10,8 +10,6 @@ const VERY_BIG_NUMBER = 999;
 
 const POWER_NAME = 1; // hz
 const CATEGORY = 1; // i guess its cars
-// const MARKA_ID_HONDA = 28; // i guess marka_id is car vendor/manufacturer
-// const MODEL_ID_ACCORD = 262;
 
 const filterDefinedProps = (props: *) => Object.keys(props).reduce((acc: *, key: *) => {
     if (typeof props[key] !== 'undefined') {
@@ -35,6 +33,8 @@ const buildSearchQuery = (props: *): string => {
         'model_id[0]': props.currentModel,
         's_yers[0]': props.currentYearFrom,
         'po_yers[0]': props.currentYearTo,
+        engineVolumeFrom: props.engineVolumeFrom,
+        engineVolumeTo: props.engineVolumeTo,
         currency: 1,
         custom: 1,
         'bodystyle[5]': props.currentBodyStyle,

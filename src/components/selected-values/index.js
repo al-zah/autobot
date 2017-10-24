@@ -12,6 +12,8 @@ const SelectedValues = (props: LayoutPropsType) =>
                 <Table.HeaderCell>State</Table.HeaderCell>
                 <Table.HeaderCell>Year From</Table.HeaderCell>
                 <Table.HeaderCell>Year To</Table.HeaderCell>
+                <Table.HeaderCell>Engine volume from</Table.HeaderCell>
+                <Table.HeaderCell>Engine volume to</Table.HeaderCell>
             </Table.Row>
         </Table.Header>
 
@@ -23,6 +25,8 @@ const SelectedValues = (props: LayoutPropsType) =>
                 <Table.Cell>{props.currentState}</Table.Cell>
                 <Table.Cell>{props.currentYearFrom}</Table.Cell>
                 <Table.Cell>{props.currentYearTo}</Table.Cell>
+                <Table.Cell>{props.engineVolumeFrom}</Table.Cell>
+                <Table.Cell>{props.engineVolumeTo}</Table.Cell>
             </Table.Row>
         </Table.Body>
     </Table>;

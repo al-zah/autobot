@@ -26,6 +26,7 @@ import Years from './components/years';
 import BodyStyles from './components/bodystyles';
 import StartBotButton from './components/start-bot-button';
 import CurrentBots from './components/current-bots';
+import EngineVolume from './components/engine-volume';
 
 export const FilterTitle = styled.h2`
     font-size: 16px;
@@ -53,6 +54,8 @@ const enhancer = compose(
     withState('currentYearTo', 'updateCurrentYearTo', null),
     withState('currentModel', 'updateCurrentModel', null),
     withState('currentBodyStyle', 'updateCurrentBodyStyle', null),
+    withState('engineVolumeFrom', 'updateEngineVolumeFrom', null),
+    withState('engineVolumeTo', 'updateEngineVolumeTo', null),
 );
 
 type GenericEntityType = {
@@ -77,12 +80,17 @@ export type LayoutPropsType = {
     currentYearTo: ?string,
     currentModel: ?string,
     currentBodyStyle: ?string,
+    engineVolumeFrom: ?string,
+    engineVolumeTo: ?string,
+
     updateCurrentBrand: () => void,
     updateCurrentState: () => void,
     updateCurrentYearFrom: () => void,
     updateCurrentYearTo: () => void,
     updateCurrentModel: () => void,
-    updateCurrentBodyStyle: () => void
+    updateCurrentBodyStyle: () => void,
+    updateEngineVolumeFrom: () => void,
+    updateEngineVolumeTo: () => void
 };
 
 const Layout = (props: LayoutPropsType) =>
@@ -93,6 +101,7 @@ const Layout = (props: LayoutPropsType) =>
         <BodyStyles {...props} />
         <State {...props} />
         <Years {...props} />
+        <EngineVolume {...props} />
 
         <Divider horizontal>Currently selected:</Divider>
         <SelectedValues {...props} />

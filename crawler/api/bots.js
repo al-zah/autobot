@@ -6,7 +6,7 @@ import logger from '../logger';
 
 export const createBot = (req: $Request, res: $Response) => {
     const { currentBrand, currentState, currentYearFrom, currentYearTo, currentModel, currentBodyStyle,
-        title } = req.body;
+        title, engineVolumeFrom, engineVolumeTo } = req.body;
 
     readBotsService()
         .then((createdBots: *) => {
@@ -18,6 +18,8 @@ export const createBot = (req: $Request, res: $Response) => {
                     currentYearTo,
                     currentModel,
                     currentBodyStyle,
+                    engineVolumeFrom,
+                    engineVolumeTo,
                 }).then(() => res.send('OK')).catch(logger.error);
             } else {
                 res.status(HTTPStatus.CONFLICT).send(`Already have ${title}`);

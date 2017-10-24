@@ -14,17 +14,29 @@ const requiredProps = [
     'currentModel',
 ];
 
+const allProps = [
+    ...requiredProps,
+    'currentBrand',
+    'currentState',
+    'currentYearFrom',
+    'currentYearTo',
+    'currentModel',
+    'currentBodyStyle',
+    'engineVolumeFrom',
+    'engineVolumeTo',
+];
+
 const findTitleByProp = props => (propName, value) => {
     const entity = prop(propName, props).find(ent => ent.value === value);
 
-    return entity.name;
+    return entity && entity.name;
 };
 
 const enhancer = compose(
     hideIfNoData((props: LayoutPropsType): boolean => requiredProps.some(propName => isNil(prop(propName, props)))),
     withHandlers({
         onBotStartButtonClick: (props: LayoutPropsType) => {
-            const reqProps = requiredProps.reduce((acc, val) => ({
+            const newBotProps = allProps.reduce((acc, val) => ({
                 ...acc,
                 [val]: prop(val, props),
             }), {});
@@ -33,12 +45,8 @@ const enhancer = compose(
 
             const brandTitle = findTitle('brands', prop('currentBrand', props));
             const modelTitle = findTitle('models', prop('currentModel', props));
-            const bodyStyleTitle = findTitle('bodyStyles', prop('currentBodyStyle', props));
-            const stateTitle = findTitle('states', prop('currentState', props));
-            const yearFrom = prop('currentYearFrom', props);
-            const yearTo = prop('currentYearTo', props);
 
-            const title = `${brandTitle} ${modelTitle} ${bodyStyleTitle} in ${stateTitle}, ${yearFrom}-${yearTo}`;
+            const title = `${brandTitle} ${modelTitle}`;
 
             fetch('/api/bots', {
                 method: 'POST',
@@ -47,7 +55,7 @@ const enhancer = compose(
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    ...reqProps,
+                    ...newBotProps,
                     title,
                 }),
             });

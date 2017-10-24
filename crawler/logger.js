@@ -3,8 +3,8 @@ import winston from 'winston';
 require('winston-papertrail').Papertrail; // eslint-disable-line
 
 const winstonPapertrail = new winston.transports.Papertrail({
-    host: 'logs5.papertrailapp.com',
-    port: 13406,
+    host: 'logs6.papertrailapp.com',
+    port: 38171,
 });
 
 winstonPapertrail.on('error', (err) => {
