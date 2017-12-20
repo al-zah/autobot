@@ -24,6 +24,9 @@ const allProps = [
     'currentBodyStyle',
     'engineVolumeFrom',
     'engineVolumeTo',
+    'priceTo',
+    'gasolineType',
+    'transmission',
 ];
 
 const findTitleByProp = props => (propName, value) => {

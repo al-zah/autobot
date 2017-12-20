@@ -15,7 +15,7 @@ import {
     BODYSTYLES,
     bodyStylesSelector,
     BOTS,
-    botsSelector
+    botsSelector,
 } from './api/entities';
 import type { AppStateType } from './reducers/index';
 import Brands from './components/brand';
@@ -27,6 +27,9 @@ import BodyStyles from './components/bodystyles';
 import StartBotButton from './components/start-bot-button';
 import CurrentBots from './components/current-bots';
 import EngineVolume from './components/engine-volume';
+import Gasoline from './components/gasoline-type';
+import Price from './components/price';
+import Transmission from './components/transmission';
 
 export const FilterTitle = styled.h2`
     font-size: 16px;
@@ -56,6 +59,9 @@ const enhancer = compose(
     withState('currentBodyStyle', 'updateCurrentBodyStyle', null),
     withState('engineVolumeFrom', 'updateEngineVolumeFrom', null),
     withState('engineVolumeTo', 'updateEngineVolumeTo', null),
+    withState('gasolineType', 'updateGasolineType', null), // type
+    withState('priceTo', 'updatePrice', null), // price_do
+    withState('transmission', 'updateTranny', null), // gearbox
 );
 
 type GenericEntityType = {
@@ -82,6 +88,9 @@ export type LayoutPropsType = {
     currentBodyStyle: ?string,
     engineVolumeFrom: ?string,
     engineVolumeTo: ?string,
+    gasolineType: ?string,
+    priceTo: ?string,
+    transmission?: string,
 
     updateCurrentBrand: () => void,
     updateCurrentState: () => void,
@@ -90,7 +99,10 @@ export type LayoutPropsType = {
     updateCurrentModel: () => void,
     updateCurrentBodyStyle: () => void,
     updateEngineVolumeFrom: () => void,
-    updateEngineVolumeTo: () => void
+    updateEngineVolumeTo: () => void,
+    updateGasolineType: () => void,
+    updatePrice: () => void,
+    updateTranny: () => void
 };
 
 const Layout = (props: LayoutPropsType) =>
@@ -102,6 +114,9 @@ const Layout = (props: LayoutPropsType) =>
         <State {...props} />
         <Years {...props} />
         <EngineVolume {...props} />
+        <Gasoline {...props} />
+        <Price {...props} />
+        <Transmission {...props} />
 
         <Divider horizontal>Currently selected:</Divider>
         <SelectedValues {...props} />

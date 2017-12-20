@@ -38,6 +38,9 @@ const buildSearchQuery = (props: *): string => {
         currency: 1,
         custom: 1,
         'bodystyle[5]': props.currentBodyStyle,
+        'type[0]': props.gasolineType,
+        price_do: props.priceTo,
+        'gearbox[0]': props.transmission,
     };
 
     return `${URI_SEARCH_BASE}?${stringify(filterDefinedProps(queryMap))}`;
