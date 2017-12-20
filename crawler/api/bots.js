@@ -20,6 +20,9 @@ export const createBot = (req: $Request, res: $Response) => {
                     currentBodyStyle,
                     engineVolumeFrom,
                     engineVolumeTo,
+                    gasolineType,
+                    priceTo,
+                    transmission,
                 }).then(() => res.send('OK')).catch(logger.error);
             } else {
                 res.status(HTTPStatus.CONFLICT).send(`Already have ${title}`);

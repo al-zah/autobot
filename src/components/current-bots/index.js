@@ -13,6 +13,9 @@ const Row = (props: LayoutPropsType & { title: string }) =>
         <Table.Cell>{props.currentYearTo}</Table.Cell>
         <Table.Cell>{props.engineVolumeFrom}</Table.Cell>
         <Table.Cell>{props.engineVolumeTo}</Table.Cell>
+        <Table.Cell>{props.priceTo}</Table.Cell>
+        <Table.Cell>{props.gasolineType}</Table.Cell>
+        <Table.Cell>{props.transmission}</Table.Cell>
     </Table.Row>;
 
 const SelectedValues = (props: LayoutPropsType) =>
@@ -28,6 +31,9 @@ const SelectedValues = (props: LayoutPropsType) =>
                 <Table.HeaderCell>Year To</Table.HeaderCell>
                 <Table.HeaderCell>Engine Volume From</Table.HeaderCell>
                 <Table.HeaderCell>Engine Volume To</Table.HeaderCell>
+                <Table.HeaderCell>Price To</Table.HeaderCell>
+                <Table.HeaderCell>Gasoline Type</Table.HeaderCell>
+                <Table.HeaderCell>Transmission</Table.HeaderCell>
             </Table.Row>
         </Table.Header>
 
