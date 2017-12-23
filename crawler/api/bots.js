@@ -6,7 +6,7 @@ import logger from '../logger';
 
 export const createBot = (req: $Request, res: $Response) => {
     const { currentBrand, currentState, currentYearFrom, currentYearTo, currentModel, currentBodyStyle,
-        title, engineVolumeFrom, engineVolumeTo } = req.body;
+        title, engineVolumeFrom, engineVolumeTo, gasolineType, priceTo, transmission } = req.body;
 
     readBotsService()
         .then((createdBots: *) => {
