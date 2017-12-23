@@ -41,6 +41,7 @@ const buildSearchQuery = (props: *): string => {
         'type[0]': props.gasolineType,
         price_do: props.priceTo,
         'gearbox[0]': props.transmission,
+        state: props.currentState,
     };
 
     return `${URI_SEARCH_BASE}?${stringify(filterDefinedProps(queryMap))}`;
