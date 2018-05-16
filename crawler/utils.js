@@ -7,17 +7,22 @@ export const fetchWrapper = (url, options) =>
                 json,
                 response,
             })))
-            .then(({ response, json }) => {
-                if (!response.ok) {
+            .then((props) => {
+                if (!props || !props.response) {
+                    console.log(`props: ${JSON.stringify(props)}`);
+
+                    return console.error(`FAIL on url: ${url}`);
+                }
+                if (!props.response.ok) {
                     const error = {
-                        ...json,
-                        status: response.status,
+                        ...props.json,
+                        status: props.response.status,
                     };
 
                     return reject(error);
                 }
 
-                return resolve(json);
+                return resolve(props.json);
             })
             .catch((err) => {
                 reject(err);

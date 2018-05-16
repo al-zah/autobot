@@ -1,14 +1,15 @@
 // flow
 import stream from 'stream';
 import request from 'request';
-import { difference, take, head, filter, compose, propEq } from 'ramda';
+import { difference, head, filter, compose, propEq } from 'ramda';
 import type { CarType, QueryResultType } from 'autobot';
 import { fetchByQuery, idsSelector, fetchById } from './fetcher';
 import logger from './logger';
 import { readBotsService, readResultsService, writeResultsService } from './services';
 
-const BULLHORN_ID = 'ccrmZLplg30';
+const BULLHORN_ID = 'cqRuOm5OAVn';
 const URI_BASE = 'https://auto.ria.com/';
+const DELAY = 25000;
 
 const requestToIntegram = (id: string, res: () => void) => {
     const url = `https://integram.org/${id}`;
@@ -46,7 +47,7 @@ export const horn = (id: string, json: CarType) => {
 
 const fetcher = (props: *) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
-        logger.info(`${Date.now()}: crawling completed successfully!`);
+        logger.info(`${new Date().toUTCString()}: crawling completed successfully!`);
         readResultsService()
             .then((lastQueryResults: *) => {
                 const filterByTitle = compose(
@@ -64,9 +65,10 @@ const fetcher = (props: *) => fetchByQuery(props)
                 const maybeNewValues = difference(idsSelector(json), idsSelector(lastQueryResultsByTitle));
 
                 if (maybeNewValues.length > 0) {
-                    Promise.all(maybeNewValues.map(fetchById))
-                        .then((cars: Array<CarType>) => take(5, cars).forEach(car => horn(BULLHORN_ID, car))) // eslint-disable-line
-                        .catch(logger.error);
+                    maybeNewValues.forEach(value => setTimeout(
+                        () => fetchById(value).then(car => horn(BULLHORN_ID, car)).catch(logger.error), // eslint-disable-line
+                        1000, // eslint-disable-line
+                    ));
                 }
 
                 return writeResultsService(props.title, json).catch(logger.error);
@@ -76,5 +78,7 @@ const fetcher = (props: *) => fetchByQuery(props)
 
 export const askAllBots = () =>
     readBotsService()
-        .then((createdBots: *) => createdBots.forEach(bot => fetcher(bot)))
+        .then((createdBots: *) => {
+            createdBots.forEach(bot => setTimeout(() => fetcher(bot), DELAY / createdBots.length));
+        })
         .catch(logger.error);

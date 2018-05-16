@@ -12,7 +12,7 @@ const POWER_NAME = 1; // hz
 const CATEGORY = 1; // i guess its cars
 
 const filterDefinedProps = (props: *) => Object.keys(props).reduce((acc: *, key: *) => {
-    if (typeof props[key] !== 'undefined') {
+    if (typeof props[key] !== 'undefined' && props[key] !== null) {
         return {
             ...acc,
             [key]: props[key],
