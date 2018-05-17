@@ -47,7 +47,6 @@ export const horn = (id: string, json: CarType) => {
 
 const fetcher = (props: *) => fetchByQuery(props)
     .then((json: QueryResultType) => { // eslint-disable-line
-        logger.info(`${new Date().toUTCString()}: crawling completed successfully!`);
         readResultsService()
             .then((lastQueryResults: *) => {
                 const filterByTitle = compose(
